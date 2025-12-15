@@ -101,9 +101,9 @@ export function Timeline({ clips }: TimelineProps) {
                 </div>
 
                 {/* Duration Badge */}
-                <div className="ml-2 sm:ml-4 flex-shrink-0 px-2 sm:px-3 py-1 bg-background/60 rounded text-xs font-mono text-text-secondary">
+                {/* <div className="ml-2 sm:ml-4 flex-shrink-0 px-2 sm:px-3 py-1 bg-background/60 rounded text-xs font-mono text-text-secondary">
                   {clip.embedType === 'instagram' ? '📸' : '🎬'}
-                </div>
+                </div> */}
               </div>
 
               {/* Active Indicator Line */}

@@ -140,7 +140,7 @@ export function Hero({ onEnterTimeline }: HeroProps) {
       <div className="absolute inset-0 bg-gradient-radial from-transparent to-background opacity-50 pointer-events-none" />
 
       <motion.div
-        className="max-w-5xl w-full text-center z-10"
+        className="max-w-7xl w-full text-center z-10"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -212,7 +212,7 @@ export function Hero({ onEnterTimeline }: HeroProps) {
           variants={subtitleVariants}
           className="text-lg md:text-2xl text-text-secondary mb-8 font-light tracking-wide"
         >
-          Video Editor & Storyteller
+          Video Shooting & Editing
         </motion.p>
 
         {/* Description */}
@@ -220,7 +220,7 @@ export function Hero({ onEnterTimeline }: HeroProps) {
           variants={descriptionVariants}
           className="text-sm md:text-base text-text-secondary max-w-2xl mx-auto mb-12 leading-relaxed"
         >
-          Crafting cinematic visual narratives through precision editing, color grading, and motion design.
+         Video editor and videographer shooting and editing concerts, reels, and short-form content, capturing real moments and shaping them into clean, engaging edits.
         </motion.p>
 
         {/* CTA Button with enhanced micro-interactions */}

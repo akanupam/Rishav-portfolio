@@ -25,13 +25,11 @@ export function About() {
 
   const skills = [
     'Premiere Pro',
-    'Final Cut Pro',
-    'After Effects',
     'DaVinci Resolve',
+    'CapCut',
     'Color Grading',
     'Motion Design',
     'Sound Design',
-    'VFX Compositing',
   ];
 
   const tools = [
@@ -45,10 +43,10 @@ export function About() {
   return (
     <section
       id="about"
-      className="min-h-screen flex items-center justify-center px-6 md:px-8 py-24"
+      className="flex items-center justify-center px-6 md:px-8 py-12 md:py-16"
     >
       <motion.div
-        className="max-w-4xl w-full"
+        className="max-w-7xl w-full"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -70,18 +68,13 @@ export function About() {
             className="md:col-span-2 space-y-4"
           >
             <p className="text-text-secondary text-base leading-relaxed">
-              With over 5 years of professional video editing experience, I specialize in
-              crafting compelling visual narratives through meticulous editing, color
-              grading, and motion design. My work spans commercial, corporate, and creative
-              content across multiple platforms.
+              With over 2.5 years of hands-on experience in video shooting and editing, I work on reels, concert highlights, and short-form content designed for social platforms. I focus on capturing real moments on camera and shaping them into clean, engaging edits.
             </p>
             <p className="text-text-secondary text-base leading-relaxed">
-              I believe in the power of precision editing and cinematic storytelling. Every
-              frame, transition, and cut serves a purpose—to engage, inform, and inspire.
+              For me, good videos come from a balance of strong shooting and thoughtful editing. Every cut, transition, and beat is chosen to match the energy of the moment and keep the viewer hooked.
             </p>
             <p className="text-text-secondary text-base leading-relaxed">
-              Currently available for freelance projects, collaborations, and full-time
-              opportunities with forward-thinking creative teams.
+              Currently open to freelance projects, collaborations, and full-time opportunities where creativity and visual storytelling matter.
             </p>
           </motion.div>
 
@@ -95,19 +88,19 @@ export function About() {
                 <p className="text-xs text-text-secondary font-mono uppercase tracking-widest mb-1">
                   Experience
                 </p>
-                <p className="text-lg font-semibold text-text-primary">5+ Years</p>
+                <p className="text-lg font-semibold text-text-primary">2.5+ Years</p>
               </div>
               <div>
                 <p className="text-xs text-text-secondary font-mono uppercase tracking-widest mb-1">
-                  Projects Completed
+                  Edited Videos
                 </p>
-                <p className="text-lg font-semibold text-text-primary">150+</p>
+                <p className="text-lg font-semibold text-text-primary">50+</p>
               </div>
               <div>
                 <p className="text-xs text-text-secondary font-mono uppercase tracking-widest mb-1">
                   Specialization
                 </p>
-                <p className="text-lg font-semibold text-text-primary">Cinematic Edit</p>
+                <p className="text-lg font-semibold text-text-primary">Shooting & Editing</p>
               </div>
             </div>
           </motion.div>
@@ -115,7 +108,7 @@ export function About() {
 
         {/* Skills Section */}
         <motion.div variants={itemVariants} className="mt-12 space-y-6">
-          <h3 className="text-xl font-semibold text-text-primary">Core Skills</h3>
+          <h3 className="text-xl font-semibold text-text-primary">Core Skills & Tools:</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {skills.map((skill) => (
               <motion.div
@@ -130,7 +123,7 @@ export function About() {
         </motion.div>
 
         {/* Tools Section */}
-        <motion.div variants={itemVariants} className="mt-12 space-y-6">
+        {/* <motion.div variants={itemVariants} className="mt-12 space-y-6">
           <h3 className="text-xl font-semibold text-text-primary">Tools & Software</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {tools.map((tool) => (
@@ -144,7 +137,7 @@ export function About() {
               </motion.div>
             ))}
           </div>
-        </motion.div>
+        </motion.div> */}
       </motion.div>
     </section>
   );

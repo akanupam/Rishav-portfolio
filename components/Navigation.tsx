@@ -18,7 +18,7 @@ export function Navigation() {
         
         <div className="hidden md:flex gap-8 text-text-secondary text-sm">
           <a href="#hero" className="hover:text-accent-primary transition-colors">Home</a>
-          <a href="#editor" className="hover:text-accent-primary transition-colors">Editor</a>
+          <a href="#editor" className="hover:text-accent-primary transition-colors">Edits</a>
           <a href="#about" className="hover:text-accent-primary transition-colors">About</a>
         </div>
 

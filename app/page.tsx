@@ -30,8 +30,8 @@ export default function Home() {
       <About />
 
       {/* Contact CTA */}
-      <section className="min-h-screen flex items-center justify-center px-6 md:px-8">
-        <div className="max-w-3xl text-center space-y-8">
+      <section className="flex items-center justify-center px-6 md:px-8 py-12 md:py-16">
+        <div className="max-w-7xl w-full text-center space-y-8">
           <h2 className="text-5xl md:text-7xl font-black tracking-tighter">
             Ready to Collaborate?
           </h2>
@@ -43,7 +43,7 @@ export default function Home() {
             href="https://instagram.com/rishavkumar46895/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block px-8 py-4 bg-accent-secondary text-background font-semibold rounded-lg hover:shadow-glow-cyan transition-all duration-300 hover:scale-105 active:scale-95"
+            className="inline-block px-8 py-4 bg-accent-primary text-background font-semibold rounded-lg hover:shadow-glow-blue transition-all duration-300 hover:scale-105 active:scale-95"
           >
             Start a Project
           </a>

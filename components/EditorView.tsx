@@ -45,7 +45,7 @@ export function EditorView({ clips }: EditorViewProps) {
   return (
     <section
       id="editor"
-      className="min-h-screen px-4 sm:px-6 md:px-8 py-16 sm:py-20 md:py-24 space-y-8 sm:space-y-12 bg-gradient-to-b from-background via-background to-background"
+      className="px-4 sm:px-6 md:px-8 py-12 sm:py-16 md:py-20 space-y-8 sm:space-y-12 bg-gradient-to-b from-background via-background to-background"
     >
       <motion.div
         className="max-w-7xl mx-auto w-full space-y-10 sm:space-y-12"
@@ -61,7 +61,7 @@ export function EditorView({ clips }: EditorViewProps) {
         >
           <div className="space-y-2">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-text-primary">
-              Editor View
+              Edits
             </h2>
             <div className="h-1 w-16 sm:w-20 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full" />
           </div>
@@ -84,6 +84,24 @@ export function EditorView({ clips }: EditorViewProps) {
           className="w-full"
         >
           <Timeline clips={clips} />
+        </motion.div>
+
+        {/* See More Link */}
+        <motion.div
+          variants={panelVariants}
+          className="pt-8 flex justify-center"
+        >
+          <a
+            href="https://instagram.com/rishavkumar46895/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center px-6 py-3 text-accent-primary hover:text-text-primary bg-panel rounded-lg border border-border hover:border-accent-primary transition-all duration-300 group text-base sm:text-lg font-semibold hover:shadow-glow-blue"
+          >
+            See more of my work{' '}
+            <span className="ml-2 transform group-hover:translate-x-1 transition-transform duration-300">
+              →
+            </span>
+          </a>
         </motion.div>
       </motion.div>
     </section>
