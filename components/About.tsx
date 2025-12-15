@@ -108,7 +108,7 @@ export function About() {
 
         {/* Skills Section */}
         <motion.div variants={itemVariants} className="mt-12 space-y-6">
-          <h3 className="text-xl font-semibold text-text-primary">Core Skills & Tools:</h3>
+          <h3 className="text-xl font-semibold text-text-primary">Core Skills & tools</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {skills.map((skill) => (
               <motion.div
@@ -121,6 +121,71 @@ export function About() {
             ))}
           </div>
         </motion.div>
+
+        {/* Subsections Grid - Horizontal Layout */}
+        <div className="grid md:grid-cols-3 gap-8 mt-12">
+          {/* Shooting Equipment & Tools */}
+          <motion.div variants={itemVariants} className="space-y-4">
+            <h3 className="text-xl font-semibold text-text-primary">Shooting Gears</h3>
+            <div className="flex flex-wrap gap-2">
+              {['Sony Camera', 'Gimbal', 'iPhone'].map((gear) => (
+                <span
+                  key={gear}
+                  className="px-3 py-2 bg-panel/50 border border-border/50 rounded-full text-base text-text-secondary hover:border-accent-primary/40 transition-colors"
+                >
+                  {gear}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Social Media Management */}
+          <motion.div variants={itemVariants} className="space-y-4">
+            <h3 className="text-xl font-semibold text-text-primary">Social Media Management</h3>
+            <p className="text-text-secondary text-base leading-relaxed">
+              Managing and handling social media content for artists and creators.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { handle: '@sahebmusic_', url: 'https://www.instagram.com/sahebmusic_/' },
+                { handle: '@vrcgrands', url: 'https://www.instagram.com/vrcgrands/' },
+                { handle: '@katyaynisings', url: 'https://www.instagram.com/katyaynisings/' },
+              ].map((artist) => (
+                <a
+                  key={artist.handle}
+                  href={artist.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-2 bg-panel/50 border border-border/50 rounded-full text-base text-accent-primary hover:text-text-primary hover:border-accent-primary/60 transition-all duration-300"
+                >
+                  {artist.handle}
+                </a>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Collaborations */}
+          <motion.div variants={itemVariants} className="space-y-4">
+            <h3 className="text-xl font-semibold text-text-primary">Collaborations</h3>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { name: 'VRC Grands', url: 'https://www.instagram.com/vrcgrands/' },
+                { name: 'Coding Blocks LPU', url: 'https://www.instagram.com/codingblocks.lpu' },
+              ].map((collab) => (
+                <a
+                  key={collab.name}
+                  href={collab.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-panel/50 border border-border/50 rounded-lg text-base text-text-secondary hover:text-accent-primary hover:border-accent-primary/60 transition-all duration-300 inline-flex items-center gap-2"
+                >
+                  {collab.name}
+                  <span className="text-xs opacity-60">→</span>
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        </div>
 
         {/* Tools Section */}
         {/* <motion.div variants={itemVariants} className="mt-12 space-y-6">

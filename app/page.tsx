@@ -39,14 +39,22 @@ export default function Home() {
             Whether you're looking for a talented video editor, motion designer, or colorist,
             I'm ready to bring your vision to life.
           </p>
-          <a
-            href="https://instagram.com/rishavkumar46895/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-8 py-4 bg-accent-primary text-background font-semibold rounded-lg hover:shadow-glow-blue transition-all duration-300 hover:scale-105 active:scale-95"
-          >
-            Start a Project
-          </a>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="https://instagram.com/rishavkumar46895/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-8 py-4 bg-accent-primary text-background font-semibold rounded-lg hover:shadow-glow-blue transition-all duration-300 hover:scale-105 active:scale-95"
+            >
+              Start a Project
+            </a>
+            <a
+              href="mailto:rishavkumar46895@gmail.com"
+              className="inline-block px-8 py-4 bg-panel border border-accent-primary text-accent-primary font-semibold rounded-lg hover:shadow-glow-blue hover:bg-accent-primary/10 transition-all duration-300 hover:scale-105 active:scale-95"
+            >
+              Email Me
+            </a>
+          </div>
         </div>
       </section>
 

@@ -92,7 +92,7 @@ export function EditorView({ clips }: EditorViewProps) {
           className="pt-8 flex justify-center"
         >
           <a
-            href="https://instagram.com/rishavkumar46895/"
+            href="https://drive.google.com/drive/folders/1h54X9IMYGDEOcRMfIHNr4_MuUhPFKw8l"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-6 py-3 text-accent-primary hover:text-text-primary bg-panel rounded-lg border border-border hover:border-accent-primary transition-all duration-300 group text-base sm:text-lg font-semibold hover:shadow-glow-blue"
