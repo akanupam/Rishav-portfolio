@@ -70,11 +70,6 @@ export function PreviewMonitor({ clip }: PreviewMonitorProps) {
               title={clip.title}
             />
           )}
-
-          {/* Duration Badge */}
-          {/* <div className="absolute top-3 sm:top-4 right-3 sm:right-4 px-3 py-1 bg-background/90 backdrop-blur text-text-primary text-xs font-mono rounded-lg border border-border z-20 shadow-lg">
-            {clip.embedType === 'instagram' ? '📸' : '🎬'}
-          </div> */}
         </div>
       </div>
 
@@ -115,9 +110,6 @@ export function PreviewMonitor({ clip }: PreviewMonitorProps) {
           <div>
             <span className="text-accent-primary">Type:</span> {clip.embedType === 'instagram' ? 'Instagram Reel' : 'Video'}
           </div>
-          {/* <div>
-            <span className="text-accent-primary">Categories:</span> {clip.category.length}
-          </div> */}
         </div>
       </motion.div>
     </motion.div>

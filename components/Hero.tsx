@@ -1,12 +1,53 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface HeroProps {
   onEnterTimeline: () => void;
 }
 
 export function Hero({ onEnterTimeline }: HeroProps) {
+  const fullText = 'Cinematographer & Editor ';
+  const [displayedText, setDisplayedText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const typingSpeed = 80;
+    const deletingSpeed = 50;
+    const pauseBeforeDelete = 2000;
+    const pauseBeforeType = 500;
+
+    if (!isDeleting && currentIndex < fullText.length) {
+      // Typing forward
+      const timeout = setTimeout(() => {
+        setDisplayedText((prev) => prev + fullText[currentIndex]);
+        setCurrentIndex((prev) => prev + 1);
+      }, typingSpeed);
+      return () => clearTimeout(timeout);
+    } else if (!isDeleting && currentIndex === fullText.length) {
+      // Pause before deleting
+      const timeout = setTimeout(() => {
+        setIsDeleting(true);
+      }, pauseBeforeDelete);
+      return () => clearTimeout(timeout);
+    } else if (isDeleting && currentIndex > 0) {
+      // Deleting backward
+      const timeout = setTimeout(() => {
+        setDisplayedText((prev) => prev.slice(0, -1));
+        setCurrentIndex((prev) => prev - 1);
+      }, deletingSpeed);
+      return () => clearTimeout(timeout);
+    } else if (isDeleting && currentIndex === 0) {
+      // Pause before retyping
+      const timeout = setTimeout(() => {
+        setIsDeleting(false);
+      }, pauseBeforeType);
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, isDeleting, fullText]);
   // Container animation for staggered children
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -46,19 +87,6 @@ export function Hero({ onEnterTimeline }: HeroProps) {
     },
   };
 
-  // Description with stagger
-  const descriptionVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: 'easeOut',
-      },
-    },
-  };
-
   // Button bounce entrance
   const buttonVariants = {
     hidden: { opacity: 0, y: 40, scale: 0.8 },
@@ -83,19 +111,6 @@ export function Hero({ onEnterTimeline }: HeroProps) {
       scale: [1, 1.1, 1],
       transition: {
         duration: 4,
-        ease: 'easeInOut',
-        repeat: Infinity,
-      },
-    },
-  };
-
-  // Scroll indicator pulse
-  const scrollIndicatorVariants = {
-    animate: {
-      y: [0, 12, 0],
-      opacity: [0.5, 1, 0.5],
-      transition: {
-        duration: 2.5,
         ease: 'easeInOut',
         repeat: Infinity,
       },
@@ -150,6 +165,45 @@ export function Hero({ onEnterTimeline }: HeroProps) {
           variants={headingVariants}
           className="relative mb-8 md:mb-12"
         >
+          {/* Profile Picture */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex justify-center mb-8"
+          >
+            <div className="relative w-56 h-56 md:w-72 md:h-72 aspect-square">
+              {/* Animated glow ring */}
+              <motion.div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(124, 124, 255, 0.6), rgba(79, 209, 197, 0.4))',
+                  filter: 'blur(20px)',
+                }}
+                animate={{
+                  opacity: [0.5, 0.8, 0.5],
+                  scale: [1, 1.1, 1],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              />
+              {/* Profile Image */}
+              <Image
+                src="/profile/profile.jpg"
+                alt="Rishav Profile"
+                width={576}
+                height={576}
+                sizes="(max-width: 768px) 224px, 288px"
+                quality={90}
+                className="relative rounded-full object-cover w-full h-full border-4 border-accent-primary/50 shadow-lg shadow-accent-primary/50"
+                priority
+              />
+            </div>
+          </motion.div>
+
           {/* Text with letter-by-letter effect */}
           <div className="relative inline-block">
             {/* Glow backdrop behind text */}
@@ -167,8 +221,8 @@ export function Hero({ onEnterTimeline }: HeroProps) {
                 ease: 'easeInOut',
               }}
             />
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-text-primary mb-4 relative z-10">
-              RISHAV
+            <h1 className="text-4xl md:text-6xl font-semibold tracking-tight text-text-primary mb-6 relative z-10">
+              I&apos;M RISHAV
             </h1>
           </div>
 
@@ -207,20 +261,17 @@ export function Hero({ onEnterTimeline }: HeroProps) {
           </motion.div>
         </motion.div>
 
-        {/* Subtitle with slide-in animation */}
+        {/* Subtitle with typewriter animation */}
         <motion.p
           variants={subtitleVariants}
-          className="text-lg md:text-2xl text-text-secondary mb-8 font-light tracking-wide"
+          className="text-lg md:text-2xl text-text-secondary mb-8 font-light tracking-wide min-h-[2rem] md:min-h-[2.5rem]"
         >
-          Video Shooting & Editing
-        </motion.p>
-
-        {/* Description */}
-        <motion.p
-          variants={descriptionVariants}
-          className="text-sm md:text-base text-text-secondary max-w-2xl mx-auto mb-12 leading-relaxed"
-        >
-         Video editor and videographer shooting and editing concerts, reels, and short-form content, capturing real moments and shaping them into clean, engaging edits.
+          {displayedText}
+          <motion.span
+            animate={{ opacity: [1, 0, 1] }}
+            transition={{ duration: 0.8, repeat: Infinity }}
+            className="inline-block w-0.5 h-5 md:h-7 bg-accent-primary ml-1 align-middle"
+          />
         </motion.p>
 
         {/* CTA Button with enhanced micro-interactions */}
@@ -243,30 +294,36 @@ export function Hero({ onEnterTimeline }: HeroProps) {
               transition: { duration: 0.6 },
             }}
           />
-          <span className="relative z-10">View Edits</span>
+          <span className="relative z-10">View Gallery</span>
         </motion.button>
       </motion.div>
 
-      {/* Enhanced Scroll indicator */}
+      {/* Scroll down arrow */}
       <motion.div
-        variants={scrollIndicatorVariants}
-        animate="animate"
+        animate={{
+          y: [0, 10, 0],
+          opacity: [0.5, 1, 0.5],
+        }}
+        transition={{
+          duration: 2,
+          ease: 'easeInOut',
+          repeat: Infinity,
+        }}
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
       >
-        <motion.div className="w-6 h-10 border-2 border-text-secondary rounded-full flex justify-center relative">
-          <motion.div
-            animate={{
-              y: [0, 6, 0],
-              opacity: [0.4, 1, 0.4],
-            }}
-            transition={{
-              duration: 2.5,
-              ease: 'easeInOut',
-              repeat: Infinity,
-            }}
-            className="w-1 h-2 bg-accent-primary rounded-full mt-2"
+        <svg
+          className="w-6 h-6 text-accent-primary"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 14l-7 7m0 0l-7-7m7 7V3"
           />
-        </motion.div>
+        </svg>
       </motion.div>
     </section>
   );

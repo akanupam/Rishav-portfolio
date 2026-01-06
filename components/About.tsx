@@ -32,14 +32,6 @@ export function About() {
     'Sound Design',
   ];
 
-  // const tools = [
-  //   'Adobe Creative Suite',
-  //   'Blackmagic Suite',
-  //   'Cinema 4D',
-  //   'Fusion',
-  //   'REDcine-X',
-  // ];
-
   return (
     <section
       id="about"

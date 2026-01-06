@@ -16,8 +16,9 @@ export function Navigation() {
           <span className="text-accent-primary">R</span>V
         </Link>
         
-        <div className="hidden md:flex gap-8 text-text-secondary text-sm">
+        <div className="hidden md:flex gap-8 text-text-secondary text-base">
           <a href="#hero" className="hover:text-accent-primary transition-colors">Home</a>
+          <a href="#gallery" className="hover:text-accent-primary transition-colors">Gallery</a>
           <a href="#editor" className="hover:text-accent-primary transition-colors">Edits</a>
           <a href="#about" className="hover:text-accent-primary transition-colors">About</a>
         </div>
@@ -33,7 +34,7 @@ export function Navigation() {
             </svg>
           </a>
           <a
-            href="https://www.instagram.com/rishavkumar46895/"
+            href="https://www.instagram.com/rishhh_oncxm/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-accent-primary transition-colors"

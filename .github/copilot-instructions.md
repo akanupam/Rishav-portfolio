@@ -1,102 +1,126 @@
 # Rishav Portfolio — AI Coding Instructions
 
 ## Project Overview
-Cinematic, editor-style portfolio for video editor Rishav built with Next.js 14, React 18, TypeScript, Tailwind CSS, and Framer Motion. The UI mimics professional NLE (non-linear editing) software with a dark, sophisticated aesthetic. Zero backend—all state managed client-side via Zustand, all data from [lib/clips.ts](lib/clips.ts).
+Cinematic, NLE-style portfolio for video editor Rishav. Next.js 14 (App Router), React 18, TypeScript strict mode, Tailwind CSS with custom tokens, Framer Motion, Zustand state. Dual content system: hardcoded clips (embeds) + server-rendered gallery (self-hosted videos).
 
 ## Architecture
 
 ### Core Application Flow
-1. **Root Layout** ([app/layout.tsx](app/layout.tsx)) — Sets metadata and applies global background styles
-2. **Main Page** ([app/page.tsx](app/page.tsx)) — Renders all sections (Hero, EditorView, About, Contact); imports CLIPS from lib
-3. **EditorView** ([components/EditorView.tsx](components/EditorView.tsx)) — Container managing three-panel editor interface
-   - Accepts `clips` prop from parent; initializes first clip on mount
-   - Uses `usePortfolioStore()` to manage `selectedClipId`, `isPlaying`
-4. **Zustand Store** ([lib/store.ts](lib/store.ts)) — Centralized state with `Clip` interface, select/toggle methods
-5. **Clips Data** ([lib/clips.ts](lib/clips.ts)) — Immutable CLIPS array with embeds (Instagram Reels, Google Drive videos)
+1. **[app/page.tsx](app/page.tsx)** — Server component; async loads Gallery, passes to HomeClient wrapper
+2. **[components/HomeClient.tsx](components/HomeClient.tsx)** — Client wrapper; orchestrates Navigation → Hero → Gallery → EditorView → About → Contact with smooth scroll refs
+3. **Two Content Systems**:
+   - **EditorView** (embeds): Timeline + PreviewMonitor for Instagram/Drive clips from [lib/clips.ts](lib/clips.ts)
+   - **Gallery** (self-hosted): Server reads `/public/videos/*.mp4`, GalleryClient renders horizontal scroll with VideoModal
+4. **[lib/store.ts](lib/store.ts)** — Zustand store for EditorView state only (`selectedClipId`, `selectClip()`, `togglePlay()`)
+5. **[lib/videos.ts](lib/videos.ts)** — Server-only module; reads `/public/videos/` directory, generates `VideoMetadata[]` with auto-formatted titles
 
-### Component Hierarchy
+### Gallery System (Self-Hosted Videos)
+**Server pipeline**: [components/Gallery.tsx](components/Gallery.tsx) calls `getVideosFromDirectory()` → reads `/public/videos/` → passes `VideoMetadata[]` to GalleryClient
+**Client rendering**: [components/Gallery/GalleryClient.tsx](components/Gallery/GalleryClient.tsx) → horizontal scroll with VideoCard thumbnails → modal on click
+**Modal**: [components/Gallery/VideoModal.tsx](components/Gallery/VideoModal.tsx) — native `<video>` player with keyboard nav (Esc/←/→), focus trap, auto-play
+**File conventions**:
+- Videos in `/public/videos/` (`.mp4`, `.webm`, `.mov`, `.avi`)
+- Titles auto-formatted from filename: `my_video_clip.mp4` → "My Video Clip"
+- No metadata files needed—everything derived from filesystem
+
+### EditorView System (Third-Party Embeds)
+**Data source**: [lib/clips.ts](lib/clips.ts) — hardcoded `CLIPS` array (id, title, duration, thumbnail SVG data URI, embedType, embedUrl, category[], description)
+**Components**: [components/EditorView.tsx](components/EditorView.tsx) → PreviewMonitor + Timeline
+**Embed types**: 
+- `instagram`: Shows thumbnail overlay with CTA button to external link
+- `drive`: Renders iframe with Google Drive `/preview` URL
+**Store integration**: [lib/store.ts](lib/store.ts) manages `selectedClipId`, initialized via useEffect pattern (see below)
+
+### State Initialization Pattern (Critical)
+EditorView uses this exact pattern to prevent re-render loops:
+```tsx
+useEffect(() => {
+  if (clips.length > 0 && !selectedClipId) {
+    selectClip(clips[0].id);
+  }
+}, [clips, selectedClipId, selectClip]);
 ```
-page.tsx
-├── Navigation
-├── Hero
-├── EditorView (state container)
-│   ├── PreviewMonitor (displays selected clip via embed)
-│   ├── Timeline (horizontal clip selector)
-│   └── ProjectBin (grid of all clips)
-├── About
-└── ContactModal
-```
+**Never** call `selectClip()` unconditionally or in multiple components—it triggers re-renders.
 
 ## Key Patterns & Conventions
 
-### State Management with Zustand
-- **Required for interactive components**: Add `'use client'` when using `usePortfolioStore()`
-- **Store interface**: `Clip` has `id`, `title`, `duration`, `thumbnail`, `embedType` ('instagram' | 'drive'), `embedUrl`, `category[]`, `description`
-- **Selection pattern**: `selectClip(id)` auto-sets `isPlaying: true` → triggers PreviewMonitor re-render
-- **Initialization**: EditorView checks `if (!selectedClipId)` on mount and calls `selectClip(clips[0].id)` to avoid re-selection loops
-- **Helper hook**: `useInitializeClips(clips)` initializes store atomically; avoid calling separately
+### Framer Motion Animation Standards
+**Staggered list reveal** (Timeline, EditorView):
+```tsx
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.2, delayChildren: 0.1 } }
+};
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
+};
+```
+- Always wrap lists in `<motion.div variants={containerVariants}>` with `initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }}`
+- Apply `itemVariants` to each child, never to the list itself
+- For clip transitions: `key={clip.id}` on motion.div with `initial={{ opacity: 0 }} animate={{ opacity: 1 }}` (0.4s)
 
-### Animation Patterns (Framer Motion)
-- **Standard stagger**: Container with `staggerChildren: 0.2` + child items with `y: 20` initial state → 0.6s transition
-  ```tsx
-  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.2, delayChildren: 0.1 } } }
-  const itemVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } } }
-  ```
-- **Scroll reveal**: Use `whileInView="visible" viewport={{ once: true, margin: '-100px' }}` for lazy loading (EditorView pattern)
-- **Nesting**: Motion.div container always wraps item arrays; never apply variants directly to children list
+### Tailwind Color System (Hard Requirement)
+NEVER use standard Tailwind colors (blue-500, red-500, etc.). Use ONLY these tokens from [tailwind.config.js](tailwind.config.js):
+- **Background**: `bg-background` (#0B0D10), `bg-panel` (#12151C)
+- **Text**: `text-text-primary` (#E6E8EB), `text-text-secondary` (#9AA0AA)
+- **Accent**: `text-accent-primary` (#7C7CFF purple), `text-accent-secondary` (#4FD1C5 cyan)
+- **Border**: `border-border` (#1F242F)
+- **Effects**: `shadow-glow-blue` (purple glow), `shadow-glow-cyan` (teal glow)
+- **Custom animations**: `animate-sweep`, `animate-pulse-glow` (both defined in config)
 
-### Styling with Tailwind
-- **Color Tokens** ([tailwind.config.js](tailwind.config.js)): ALWAYS use semantic names, never standard Tailwind colors
-  - Background: `bg-background` (#0B0D10), panels: `bg-panel` (#12151C)
-  - Text: `text-primary` (#E6E8EB), `text-secondary` (#9AA0AA)
-  - Accent: `accent-primary` (#7C7CFF purple), `accent-secondary` (#4FD1C5 cyan)
-  - Border: `border-border` (#1F242F)
-- **Glow Effects**: `shadow-glow-blue`, `shadow-glow-cyan` for neon, combine with hover transitions
-- **Custom Animations Rendering
-- **Client components**: Any using hooks (`usePortfolioStore()`, `useEffect`, `useRef`) or animations need `'use client'`
-  - EditorView, Timeline, PreviewMonitor, ClipThumbnail, About, ContactModal all client-side
-- **Server-side parent**: [app/page.tsx](app/page.tsx) imports CLIPS and passes as prop to EditorView
-- **No API routes**: All clip data hardcoded in [lib/clips.ts](lib/clips.ts); no dynamic fetching or backend
-- **Email integration hint**: `@emailjs/browser` available if contact form needs backend integration
-### Client vs. Server
-- All interactive components (`EditorView`, `Timeline`, `ProjectBin`, `ClipThumbnail`, `ContactModal`) require `'use client'` directive
-- Pass data as props from server-rendered parent ([app/page.tsx](app/page.tsx))
-- No API routes or dynamic fetching — all data from [lib/clips.ts](lib/clips.ts)
+### Client vs. Server Components
+**Requires `'use client'`**: EditorView, Timeline, PreviewMonitor, Hero, About, Navigation (all use hooks or Framer Motion)
+**Server-rendered**: [app/page.tsx](app/page.tsx) only (imports CLIPS, passes to EditorView)
+**Path alias**: `@/` maps to project root (e.g., `import { CLIPS } from '@/lib/clips'`)
+
+### Embed Handling in PreviewMonitor
+Two embed types validated via conditional rendering:
+- **Instagram** (`embedType: 'instagram'`): Shows thumbnail with CTA button linking to `embedUrl`
+- **Google Drive** (`embedType: 'drive'`): Renders iframe with `src={clip.embedUrl}` (no sandbox restrictions)
+Unsupported types render nothing (no error fallback).
 
 ## Developer Workflows
 
-### Local Development(http://localhost:3000) with hot reload
-npm run build    # Production build with TypeScript checking; errors block deploy
-npm run start    # Run built app locally (must `npm run build` first)
-npm run lint     # ESLint via `next lint` (enforces eslint-config-next rules)
+### Commands
+```bash
+npm run dev      # Dev server at http://localhost:3000 (hot reload)
+npm run build    # TypeScript strict checks; errors block build
+npm run start    # Serve production build (must run build first)
+npm run lint     # ESLint via next lint (eslint-config-next)
 ```
 
 ### Common Tasks
-1. **Add clips**: Edit CLIPS array in [lib/clips.ts](lib/clips.ts); auto-populate store on EditorView mount
-2. **New section**: Create component in [components/](components/), add `'use client'` if interactive, import in [app/page.tsx](app/page.tsx)
-3. **New state**: Extend `PortfolioStore` interface in [lib/store.ts](lib/store.ts), add setter via `set()` callback
-4. **New animation**: Define container/item variants following EditorView pattern; extract to `lib/variants.ts` if reused
-5. **Styling**: Use color tokens from tailwind config; test dark theme contrast manually (WCAG AA)ort in [app/page.tsx](app/page.tsx)
-3. **New animation** & Patterns
+1. **Add clips**: Edit CLIPS array in [lib/clips.ts](lib/clips.ts); store auto-initializes on EditorView mount
+2. **Add self-hosted videos**: Drop `.mp4`/`.webm`/`.mov`/`.avi` files into `/public/videos/`; title auto-formats from filename
+3. **New section**: Create in [components/](components/), add `'use client'` if using hooks/motion, import in [components/HomeClient.tsx](components/HomeClient.tsx)
+4. **New state**: Extend `PortfolioStore` in [lib/store.ts](lib/store.ts); add setter via `set((state) => ({ ...state, newProp: value }))`
+5. **Styling**: Use semantic color tokens; test dark theme contrast (all text must meet WCAG AA)
 
-- **Clip Initialization Bug Prevention**: EditorView only calls `selectClip()` if `!selectedClipId`; calling multiple times causes re-renders. Never initialize in multiple components.
-- **Embed Validation**: PreviewMonitor checks `embedType` ('instagram' | 'drive') and renders iframe only if matched. Unsupported types silently fail.
-- **Color Token Hard Requirement**: Use ONLY semantic names (bg-background, text-primary, accent-primary). Standard Tailwind colors (red-500, blue-500) will not display correctly.
-- **TypeScript Strict Mode**: Enforced in [tsconfig.json](tsconfig.json)—all component props, hook returns must be typed. Missing types cause build failures.
-- **Motion Children**: Framer Motion variants must be on Motion.* wrapper, not child JSX elements. Nesting Motion components inside Motion containers works but use sparingly (performance).must be passed as props
-- **Embed Types**: Only 'instagram' and 'drive' supported; validation happens in PreviewMonitor component
-- **Tailwind Colors**: All colors are custom tokens; don't use standard Tailwind colors (red-500, blue-500, etc.)
-- **TypeScript Strict Mo & Integrations
-- **framer-motion** (10.16.16): All animations via Motion.div/motion.* components; no CSS animations except keyframes
-- **zustand** (4.4.1): Lightweight store via `create()`, single source of clip truth
-- **@emailjs/browser**: Available for ContactModal; not yet integrated—add if needed for contact form
-- **next/image**: Not used; thumbnails are SVG data URIs in clip objects
-- **Embeds**: iframe src relies on Instagram/Google Drive external CDN; no server-side rendering of embeds
+## Critical Pitfalls
 
-## Project Governance
-- **No Backend**: Pure frontend—clip data static, no database, no API routes
-- **Dark Theme Fixed**: Background #0B0D10 is identity; always maintain contrast ratios (WCAG AA)
-- **Third-Party Embeds**: Instagram Reels and Google Drive videos only; no self-hosted video servers
-- **Mobile-First CSS**: Tailwind breakpoints prioritize responsive, but design desktop-first (editor software context)
-- All clips embed via third-party (Instagram, Google Drive); no self-hosted video hosting
-- Mobile responsiveness handled via Tailwind breakpoints; desktop-first design
+- **Clip Init Loop**: Never call `selectClip()` without checking `!selectedClipId` first
+- **Color Tokens**: Standard Tailwind colors won't render (config overrides default palette)
+- **TypeScript Strict**: Missing prop types cause build failures; all interfaces must be explicit
+- **Motion Nesting**: Don't nest `<motion.*>` inside `<motion.*>` lists (causes layout thrash)
+- **Embed URLs**: Instagram embeds need full profile URLs, not post IDs; Drive needs `/preview` suffix for iframe embeds
+
+## Dependencies & Integrations
+- **framer-motion** (10.16.16): All animations; no CSS keyframes except `animate-sweep`/`animate-pulse-glow`
+- **zustand** (4.4.1): Single store instance; no middleware or persistence
+- **@emailjs/browser** (4.4.1): Not yet integrated; available for future contact form
+- **Path aliases**: `@/*` resolves to project root (tsconfig.json baseUrl)
+
+## Project Constraints
+- **Pure frontend**: No API routes, no server-side data fetching beyond filesystem reads, no database
+- **Dual video systems**: Instagram/Drive embeds (hardcoded) + self-hosted videos (filesystem)
+- **Dark theme fixed**: Background #0B0D10 is brand identity; never add light mode
+- **Desktop-first**: Tailwind breakpoints optimize for 1920×1080, mobile via responsive utilities
+
+## Code Quality Standards
+**Before committing any changes**, review [PRE_COMMIT_CHECKLIST.md](.github/PRE_COMMIT_CHECKLIST.md) to prevent code bloat:
+- Remove dead code immediately
+- Delete old implementations when replacing logic
+- Keep one source of truth per feature
+- Ensure `npm run build` passes
+- No commented-out code or unused imports
