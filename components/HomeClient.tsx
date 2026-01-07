@@ -46,8 +46,8 @@ export function HomeClient({ gallerySection }: HomeClientProps) {
             Ready to Collaborate?
           </h2>
           <p className="text-text-secondary text-base md:text-lg leading-relaxed">
-            Whether you're looking for a talented video editor, motion designer, or colorist,
-            I'm ready to bring your vision to life.
+            Whether you&apos;re looking for a talented video editor, motion designer, or colorist,
+            I&apos;m ready to bring your vision to life.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a

@@ -1,10 +1,12 @@
 import 'server-only';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { generateVideoThumbnail, getThumbnailPaths } from './thumbnail';
 
 export interface VideoMetadata {
   id: string;
   videoUrl: string;
+  posterUrl: string;
   title: string;
   filename: string;
 }
@@ -21,13 +23,24 @@ export async function getVideosFromDirectory(): Promise<VideoMetadata[]> {
       videoExtensions.some((ext) => file.endsWith(ext))
     );
 
-    // Generate metadata for each video
-    const videos: VideoMetadata[] = videoFiles.map((filename, index) => ({
-      id: `video-${index + 1}`,
-      videoUrl: `/videos/${filename}`,
-      title: formatTitle(filename),
-      filename,
-    }));
+    // Generate metadata for each video with thumbnail
+    const videos: VideoMetadata[] = await Promise.all(
+      videoFiles.map(async (filename, index) => {
+        const { absolutePath, relativePath } = getThumbnailPaths(filename);
+        const videoPath = path.join(videosDirectory, filename);
+
+        // Generate thumbnail if it doesn't exist
+        await generateVideoThumbnail(videoPath, absolutePath);
+
+        return {
+          id: `video-${index + 1}`,
+          videoUrl: `/videos/${filename}`,
+          posterUrl: relativePath,
+          title: formatTitle(filename),
+          filename,
+        };
+      })
+    );
 
     return videos;
   } catch (error) {

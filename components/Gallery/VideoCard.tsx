@@ -5,12 +5,13 @@ import { useState } from 'react';
 
 interface VideoCardProps {
   videoUrl: string;
+  posterUrl: string;
   title: string;
   index: number;
   onOpen: (index: number) => void;
 }
 
-export function VideoCard({ videoUrl, title, index, onOpen }: VideoCardProps) {
+export function VideoCard({ videoUrl, posterUrl, title, index, onOpen }: VideoCardProps) {
   const [hasError, setHasError] = useState(false);
 
   return (
@@ -25,7 +26,9 @@ export function VideoCard({ videoUrl, title, index, onOpen }: VideoCardProps) {
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          !hasError && onOpen(index);
+          if (!hasError) {
+            onOpen(index);
+          }
         }
       }}
     >
@@ -52,21 +55,22 @@ export function VideoCard({ videoUrl, title, index, onOpen }: VideoCardProps) {
           {/* Video Thumbnail */}
           <video
             src={videoUrl}
+            poster={posterUrl}
             className="w-full h-full object-cover"
             playsInline
-            preload="metadata"
+            preload="none"
             muted
             onError={() => setHasError(true)}
           />
 
           {/* Play Button Overlay */}
-          <motion.div className="absolute inset-0 flex items-center justify-center bg-black/40 transition-all duration-300 group-hover:bg-black/50">
+          <motion.div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-all duration-300 group-hover:bg-black/30">
             <motion.div
               whileHover={{ scale: 1.1 }}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-accent-primary/90 backdrop-blur-sm border-2 border-white/20 flex items-center justify-center shadow-lg shadow-accent-primary/30 transition-all duration-300"
+              className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-accent-primary/30 border border-white/15 flex items-center justify-center transition-all duration-300"
             >
               <svg
-                className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1"
+                className="w-6 h-6 sm:w-7 sm:h-7 text-white ml-0.5"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >

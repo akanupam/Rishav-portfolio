@@ -143,6 +143,7 @@ export function GalleryClient({ videos }: GalleryClientProps) {
               >
                 <VideoCard
                   videoUrl={video.videoUrl}
+                  posterUrl={video.posterUrl}
                   title={video.title}
                   index={index}
                   onOpen={openModal}
@@ -173,8 +174,8 @@ export function GalleryClient({ videos }: GalleryClientProps) {
         {isModalOpen && (
           <VideoModal
             videoUrl={videos[selectedVideoIndex].videoUrl}
+            posterUrl={videos[selectedVideoIndex].posterUrl}
             title={videos[selectedVideoIndex].title}
-            currentIndex={selectedVideoIndex}
             totalVideos={videos.length}
             onClose={closeModal}
             onNavigate={navigateVideo}

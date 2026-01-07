@@ -5,8 +5,8 @@ import { useEffect, useRef } from 'react';
 
 interface VideoModalProps {
   videoUrl: string;
+  posterUrl: string;
   title: string;
-  currentIndex: number;
   totalVideos: number;
   onClose: () => void;
   onNavigate: (direction: 'prev' | 'next') => void;
@@ -14,6 +14,7 @@ interface VideoModalProps {
 
 export function VideoModal({
   videoUrl,
+  posterUrl,
   title,
   totalVideos,
   onClose,
@@ -102,6 +103,7 @@ export function VideoModal({
         <video
           ref={modalVideoRef}
           src={videoUrl}
+          poster={posterUrl}
           className="w-full h-full object-cover"
           controls
           playsInline
